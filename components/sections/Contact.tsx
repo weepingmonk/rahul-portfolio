@@ -137,7 +137,7 @@ export function Contact() {
                   <div>
                     <p className="text-xs text-slate-500">LinkedIn</p>
                     <a
-                      href={toAbsoluteUrl(personalInfo.linkedin)}
+                      href={personalInfo.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-white hover:text-orange-400 transition-colors"

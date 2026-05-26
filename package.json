@@ -9,11 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.65",
+    "@ai-sdk/react": "^3.0.193",
     "@vercel/speed-insights": "^2.0.0",
+    "ai": "^6.0.191",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
+    "openai": "^6.39.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
