@@ -1,19 +1,73 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Link2, Send, CheckCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Link2,
+  Send,
+  CheckCircle,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { personalInfo } from "@/lib/data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
+import { cn, toAbsoluteUrl } from "@/lib/utils";
+
+type FormStatus = "idle" | "loading" | "success" | "error";
+
+const inputClassName =
+  "w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 transition-colors focus:border-orange-500/40 focus:outline-none focus:ring-1 focus:ring-orange-500/30 disabled:cursor-not-allowed disabled:opacity-50";
 
 export function Contact() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setStatus("loading");
+    setErrorMessage("");
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(personalInfo.formspreeEndpoint, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (response.ok) {
+        setStatus("success");
+        form.reset();
+      } else {
+        const message =
+          (data && typeof data.error === "string" && data.error) ||
+          (Array.isArray(data?.errors) && data.errors[0]?.message) ||
+          "Something went wrong. Please try again.";
+        setErrorMessage(message);
+        setStatus("error");
+      }
+    } catch {
+      setErrorMessage(
+        "Network error. Please check your connection and try again."
+      );
+      setStatus("error");
+    }
+  };
+
+  const resetForm = () => {
+    setStatus("idle");
+    setErrorMessage("");
   };
 
   return (
@@ -47,7 +101,7 @@ export function Contact() {
                     <p className="text-xs text-slate-500">Email</p>
                     <a
                       href={`mailto:${personalInfo.email}`}
-                      className="text-sm text-white hover:text-orange-400 transition-colors"
+                      className="text-sm text-white hover:text-orange-400 transition-colors break-all"
                     >
                       {personalInfo.email}
                     </a>
@@ -83,7 +137,7 @@ export function Contact() {
                   <div>
                     <p className="text-xs text-slate-500">LinkedIn</p>
                     <a
-                      href={personalInfo.linkedin}
+                      href={toAbsoluteUrl(personalInfo.linkedin)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-white hover:text-orange-400 transition-colors"
@@ -101,18 +155,23 @@ export function Contact() {
               </div>
             </GlassCard>
 
-            {/* Quick metrics reminder */}
             <GlassCard className="p-5">
               <p className="text-xs text-slate-500 mb-3">What I deliver</p>
               <div className="space-y-2">
-                {["20–40% ROAS growth", "CPA optimization", "ACOS < 20%", "40% automation gains"].map(
-                  (item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm text-slate-300">
-                      <CheckCircle className="h-3.5 w-3.5 text-orange-400 shrink-0" />
-                      {item}
-                    </div>
-                  )
-                )}
+                {[
+                  "20–40% ROAS growth",
+                  "CPA optimization",
+                  "ACOS < 20%",
+                  "40% automation gains",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-2 text-sm text-slate-300"
+                  >
+                    <CheckCircle className="h-3.5 w-3.5 text-orange-400 shrink-0" />
+                    {item}
+                  </div>
+                ))}
               </div>
             </GlassCard>
           </motion.div>
@@ -126,101 +185,142 @@ export function Contact() {
             className="lg:col-span-3"
           >
             <GlassCard className="p-6 md:p-8" glow>
-              {submitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center py-16 text-center"
-                >
-                  <CheckCircle className="h-12 w-12 text-emerald-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white">Message sent!</h3>
-                  <p className="mt-2 text-slate-400 text-sm">
-                    Thanks for reaching out. I&apos;ll get back to you within 24 hours.
-                  </p>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor="name" className="block text-xs font-medium text-slate-400 mb-2">
-                        Full Name
-                      </label>
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        placeholder="Your name"
-                        className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-orange-500/40 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-colors"
-                      />
+              <AnimatePresence mode="wait">
+                {status === "success" ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.35 }}
+                    className="flex flex-col items-center justify-center py-12 sm:py-16 text-center"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                      <CheckCircle className="h-8 w-8 text-emerald-400" />
                     </div>
-                    <div>
-                      <label htmlFor="email" className="block text-xs font-medium text-slate-400 mb-2">
-                        Email
-                      </label>
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        placeholder="you@company.com"
-                        className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-orange-500/40 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="company" className="block text-xs font-medium text-slate-400 mb-2">
-                      Company / Brand
-                    </label>
-                    <input
-                      id="company"
-                      name="company"
-                      type="text"
-                      placeholder="Your company name"
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-orange-500/40 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="service" className="block text-xs font-medium text-slate-400 mb-2">
-                      Service Interested In
-                    </label>
-                    <select
-                      id="service"
-                      name="service"
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white focus:border-orange-500/40 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-colors appearance-none"
+                    <h3 className="mt-5 text-xl font-semibold text-white">
+                      Message sent successfully!
+                    </h3>
+                    <p className="mt-2 max-w-sm text-sm text-slate-400 leading-relaxed">
+                      Thanks for reaching out. I&apos;ve received your message and
+                      will get back to you within 24 hours.
+                    </p>
+                    <Button
+                      variant="secondary"
+                      size="md"
+                      className="mt-8"
+                      onClick={resetForm}
                     >
-                      <option value="" className="bg-[#0a1628]">Select a service</option>
-                      <option value="google-ads" className="bg-[#0a1628]">Google Ads Management</option>
-                      <option value="amazon-ppc" className="bg-[#0a1628]">Amazon PPC Optimization</option>
-                      <option value="amazon-dsp" className="bg-[#0a1628]">Amazon DSP Support</option>
-                      <option value="ga4" className="bg-[#0a1628]">GA4 Analytics</option>
-                      <option value="ai" className="bg-[#0a1628]">AI Workflow Automation</option>
-                      <option value="tracking" className="bg-[#0a1628]">Conversion Tracking</option>
-                    </select>
-                  </div>
+                      Send another message
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onSubmit={handleSubmit}
+                    className="space-y-5"
+                    noValidate
+                  >
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div className="sm:col-span-1">
+                        <label
+                          htmlFor="name"
+                          className="mb-2 block text-sm font-medium text-slate-300"
+                        >
+                          Full Name <span className="text-orange-400">*</span>
+                        </label>
+                        <input
+                          id="name"
+                          name="name"
+                          type="text"
+                          required
+                          autoComplete="name"
+                          disabled={status === "loading"}
+                          placeholder="Rahul Kumar"
+                          className={inputClassName}
+                        />
+                      </div>
+                      <div className="sm:col-span-1">
+                        <label
+                          htmlFor="email"
+                          className="mb-2 block text-sm font-medium text-slate-300"
+                        >
+                          Email Address{" "}
+                          <span className="text-orange-400">*</span>
+                        </label>
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required
+                          autoComplete="email"
+                          disabled={status === "loading"}
+                          placeholder="you@company.com"
+                          className={inputClassName}
+                        />
+                      </div>
+                    </div>
 
-                  <div>
-                    <label htmlFor="message" className="block text-xs font-medium text-slate-400 mb-2">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      required
-                      rows={5}
-                      placeholder="Tell me about your brand, goals, and current ad spend..."
-                      className="w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-orange-500/40 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-colors"
-                    />
-                  </div>
+                    <div>
+                      <label
+                        htmlFor="message"
+                        className="mb-2 block text-sm font-medium text-slate-300"
+                      >
+                        Message <span className="text-orange-400">*</span>
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        required
+                        rows={5}
+                        disabled={status === "loading"}
+                        placeholder="Tell me about your brand, goals, and current ad spend..."
+                        className={cn(inputClassName, "resize-none min-h-[140px]")}
+                      />
+                    </div>
 
-                  <Button type="submit" size="lg" className="w-full sm:w-auto cursor-pointer">
-                    <Send className="h-4 w-4" />
-                    Send Message
-                  </Button>
-                </form>
-              )}
+                    <AnimatePresence>
+                      {status === "error" && errorMessage && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          role="alert"
+                          aria-live="assertive"
+                          className="flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3"
+                        >
+                          <AlertCircle className="h-5 w-5 shrink-0 text-red-400 mt-0.5" />
+                          <p className="text-sm text-red-300">{errorMessage}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={status === "loading"}
+                      className="w-full sm:w-auto cursor-pointer"
+                    >
+                      {status === "loading" ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4" />
+                          Send Message
+                        </>
+                      )}
+                    </Button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </GlassCard>
           </motion.div>
         </div>

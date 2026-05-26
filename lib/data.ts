@@ -6,8 +6,9 @@ export const personalInfo = {
   email: "rahul.kumar209202177@email.com",
   phone: "+91 7375982141",
   location: "India",
-  linkedin: "www.linkedin.com/in/rahul-908k",
+  linkedin: "https://www.linkedin.com/in/rahul-908k",
   availability: "Open to freelance & full-time roles",
+  formspreeEndpoint: "https://formspree.io/f/xqejdlgk",
 };
 
 export const metrics = [

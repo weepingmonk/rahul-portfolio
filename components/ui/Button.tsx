@@ -11,6 +11,7 @@ interface ButtonProps {
   className?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export function Button({
@@ -21,6 +22,7 @@ export function Button({
   className,
   onClick,
   type = "button",
+  disabled = false,
 }: ButtonProps) {
   const base =
     "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50";
@@ -39,7 +41,13 @@ export function Button({
     lg: "px-8 py-4 text-base gap-2",
   };
 
-  const classes = cn(base, variants[variant], sizes[size], className);
+  const classes = cn(
+    base,
+    variants[variant],
+    sizes[size],
+    disabled && "pointer-events-none opacity-60 cursor-not-allowed",
+    className
+  );
 
   const motionProps = {
     whileHover: { scale: 1.02 },
@@ -55,7 +63,13 @@ export function Button({
   }
 
   return (
-    <motion.button type={type} onClick={onClick} className={classes} {...motionProps}>
+    <motion.button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={classes}
+      {...(disabled ? {} : motionProps)}
+    >
       {children}
     </motion.button>
   );
