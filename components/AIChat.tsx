@@ -1,26 +1,74 @@
 "use client";
 
 import { useState } from "react";
-import { useChat } from "@ai-sdk/react";
 import { MessageSquare, X } from "lucide-react";
-import { DefaultChatTransport, isTextUIPart, type UIMessage } from "ai";
 
-function getMessageText(message: UIMessage): string {
-  return message.parts
-    .filter(isTextUIPart)
-    .map((part) => part.text)
-    .join("");
-}
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
 
 export default function AIChat() {
   const [open, setOpen] = useState(false);
-  const [text, setText] = useState("");
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const { messages, sendMessage, status, error, clearError } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
-  });
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content:
+        "👋 Hi! I’m Rahul’s AI marketing assistant. Ask me about Google Ads, Amazon PPC, GA4, ROAS optimization, or AI automation.",
+    },
+  ]);
 
-  const isLoading = status === "submitted" || status === "streaming";
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage: Message = {
+      role: "user",
+      content: input,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+        }),
+      });
+
+      const data = await response.json();
+
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: data.content || "No response from AI.",
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error(error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Something went wrong. Please try again.",
+        },
+      ]);
+    }
+
+    setLoading(false);
+    setInput("");
+  };
 
   return (
     <>
@@ -32,10 +80,10 @@ export default function AIChat() {
         {open ? <X size={28} /> : <MessageSquare size={28} />}
       </button>
 
-      {/* Popup */}
+      {/* Chat Popup */}
       {open && (
-        <div className="fixed bottom-28 right-6 z-[9999] w-[380px] rounded-3xl border border-white/10 bg-zinc-900/95 backdrop-blur-xl shadow-2xl overflow-hidden">
-          
+        <div className="fixed bottom-28 right-6 z-[9999] flex h-[550px] w-[380px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur-xl">
+
           {/* Header */}
           <div className="border-b border-white/10 px-5 py-4">
             <h2 className="text-lg font-semibold text-white">
@@ -43,51 +91,26 @@ export default function AIChat() {
             </h2>
 
             <p className="text-xs text-slate-400">
-              Ask about ads, ROAS, GA4 & growth
+              Ask about growth, ads, analytics & automation
             </p>
           </div>
 
           {/* Messages */}
-          <div className="h-[350px] overflow-y-auto px-5 py-4 space-y-4">
-            {messages.length === 0 && (
-              <div className="rounded-2xl bg-white/5 p-4 text-sm text-slate-300">
-                👋 Hi! Ask me anything about:
-                <ul className="mt-2 list-disc pl-5 text-slate-400">
-                  <li>Google Ads</li>
-                  <li>Amazon PPC</li>
-                  <li>GA4 Analytics</li>
-                  <li>ROAS Optimization</li>
-                </ul>
-              </div>
-            )}
-
-            {messages.map((m) => (
+          <div className="flex-1 overflow-y-auto space-y-4 px-4 py-4">
+            {messages.map((message, index) => (
               <div
-                key={m.id}
-                className={`rounded-2xl p-3 text-sm ${
-                  m.role === "user"
-                    ? "bg-orange-500 text-white ml-auto max-w-[80%]"
-                    : "bg-white/5 text-slate-300 max-w-[80%]"
+                key={index}
+                className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
+                  message.role === "user"
+                    ? "ml-auto bg-orange-500 text-white"
+                    : "bg-white/5 text-slate-300"
                 }`}
               >
-                {getMessageText(m as UIMessage)}
+                {message.content}
               </div>
             ))}
 
-            {status === "error" && (
-              <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-200">
-                {error?.message ?? "Chatbot error. Please try again."}
-                <button
-                  type="button"
-                  onClick={clearError}
-                  className="ml-3 underline underline-offset-2 text-red-100 hover:text-white"
-                >
-                  Dismiss
-                </button>
-              </div>
-            )}
-
-            {isLoading && (
+            {loading && (
               <div className="text-sm text-slate-400">
                 AI is typing...
               </div>
@@ -95,33 +118,29 @@ export default function AIChat() {
           </div>
 
           {/* Input */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const trimmed = text.trim();
-              if (!trimmed || isLoading) return;
-              if (status === "error") clearError();
-              sendMessage({ text: trimmed });
-              setText("");
-            }}
-            className="border-t border-white/10 p-4 flex gap-3"
-          >
-            <input
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Ask me anything..."
-              disabled={isLoading}
-              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
-            />
+          <div className="border-t border-white/10 p-4">
+            <div className="flex gap-3">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                }}
+                placeholder="Ask me anything..."
+                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
+              />
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-xl bg-orange-500 px-5 py-3 text-white hover:bg-orange-600 transition"
-            >
-              Send
-            </button>
-          </form>
+              <button
+                onClick={sendMessage}
+                disabled={loading}
+                className="rounded-xl bg-orange-500 px-5 py-3 text-white transition hover:bg-orange-600 disabled:opacity-50"
+              >
+                Send
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

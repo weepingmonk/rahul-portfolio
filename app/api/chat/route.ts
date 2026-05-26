@@ -1,13 +1,22 @@
-import { openai } from "@ai-sdk/openai";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import Groq from "groq-sdk";
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  try {
+    const body = await req.json();
 
-  const result = streamText({
-    model: openai("gpt-4.1-mini"),
+    const messages = body.messages || [];
 
-    system: `
+    const completion = await groq.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+
+      messages: [
+        {
+          role: "system",
+          content: `
 You are Rahul Kumar's AI Marketing Assistant.
 
 You help visitors understand:
@@ -18,18 +27,39 @@ You help visitors understand:
 - AI Automation
 - Performance Marketing
 
-Speak professionally and focus on:
+Focus on:
 - ROAS
 - CPA reduction
-- growth strategy
 - scaling brands
 - analytics
+- growth strategy
 
-Keep answers concise and useful.
-    `,
+Keep responses concise and professional.
+          `,
+        },
 
-    messages: await convertToModelMessages(messages),
-  });
+        ...messages,
+      ],
+    });
 
-  return result.toUIMessageStreamResponse();
+    const reply =
+      completion.choices?.[0]?.message?.content ||
+      "Sorry, I couldn't generate a response.";
+
+    return Response.json({
+      content: reply,
+    });
+
+  } catch (error) {
+    console.error("GROQ ERROR:", error);
+
+    return Response.json(
+      {
+        content: "AI request failed.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
