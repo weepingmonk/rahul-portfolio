@@ -5,6 +5,7 @@ import { AnimatedBackground } from "@/components/layout/AnimatedBackground";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StructuredData } from "./structured-data";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
