@@ -3,7 +3,7 @@ export const personalInfo = {
   headline: "Scaling Brands with Data-Driven Performance Marketing",
   subheadline:
     "Google Ads • Amazon Ads • GA4 • AI Automation • Analytics",
-  email: "rahul.kumar209202177@email.com",
+  email: "rahul.kumar209202177@gmail.com",
   phone: "+91 7375982141",
   location: "India",
   linkedin: "https://www.linkedin.com/in/rahul-908k",
