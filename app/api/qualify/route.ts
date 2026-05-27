@@ -14,26 +14,48 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const prompt = `
-Analyze this business lead:
+    You are an elite performance marketing consultant.
+    
+    Analyze this business lead and generate a professional AI Growth Proposal.
+    
+    Business Type:
+    ${body.business}
+    
+    Monthly Ad Spend:
+    ${body.adSpend}
+    
+    Goals:
+    ${body.goals}
+    
+    Generate:
+    
+    1. Lead Quality Score (/10)
+    
+    2. Growth Potential Analysis
+    
+    3. Biggest Marketing Bottlenecks
+    
+    4. Recommended Growth Strategy
+    
+    5. Suggested Ad Channels
+    (Google Ads, Meta Ads, Amazon PPC, Email etc.)
+    
+    6. Recommended Services
+    
+    7. Expected Improvement Opportunities
+    
+    8. 90-Day Action Plan
+    
+    9. Estimated Scaling Potential
+    
+    Keep formatting clean and professional.
+    
+    Use headings and bullet points.
+    
+    Keep tone premium and strategic.
 
-Business Type:
-${body.business}
+    `;
 
-Monthly Ad Spend:
-${body.adSpend}
-
-Goals:
-${body.goals}
-
-Give:
-1. Lead Quality Score /10
-2. Growth Potential
-3. Recommended Marketing Strategy
-4. Recommended Services
-5. Biggest Opportunity
-
-Keep response concise and professional.
-`;
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
@@ -104,7 +126,9 @@ Keep response concise and professional.
             {
               text: {
                 content:
-                  completion.choices[0]?.message?.content || "",
+    (
+    completion.choices[0]?.message?.content || ""
+    ).slice(0, 1900),
               },
             },
           ],
