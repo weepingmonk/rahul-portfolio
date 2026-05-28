@@ -33,7 +33,9 @@ export default function LeadQualification() {
   };
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-zinc-900 p-8">
+    <section
+      id="ai-audit"
+      className="rounded-3xl border border-white/10 bg-zinc-900 p-8">
       <h2 className="text-2xl font-bold text-white mb-6">
         AI Growth Audit
       </h2>
@@ -89,6 +91,6 @@ export default function LeadQualification() {
           </div>
         )}
       </div>
-    </div>
+      </section>
   );
 }

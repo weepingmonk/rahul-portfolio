@@ -70,15 +70,13 @@ function RoasCounter() {
 export function Hero() {
   const cardPositions: Record<string, string> = {
     "top-left": "absolute top-24 left-0 hidden lg:block",
-    "top-right": "absolute top-32 right-0 hidden lg:block",
-    "bottom-left": "absolute bottom-32 left-8 hidden lg:block",
     "bottom-right": "absolute bottom-24 right-4 hidden lg:block",
   };
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
+      className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden"
     >
       {/* Floating analytics cards - desktop */}
       <div className="absolute inset-0 max-w-7xl mx-auto pointer-events-none hidden lg:block">
@@ -109,36 +107,39 @@ export function Hero() {
 
           {/* Name */}
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
-          >
-            Hi, I&apos;m{" "}
-            <span className="bg-gradient-to-r from-white via-orange-100 to-orange-400 bg-clip-text text-transparent">
-              {personalInfo.name}
-            </span>
-          </motion.h1>
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.1 }}
+  className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl leading-tight"
+>
+  Scale Your Brand with{" "}
+  <span className="bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 bg-clip-text text-transparent">
+    AI-Powered
+  </span>
+  <br />
+  Performance Marketing
+          </motion.h1>  
 
           {/* Headline */}
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl md:text-2xl leading-relaxed"
-          >
-            {personalInfo.headline}
-          </motion.p>
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.2 }}
+  className="mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl md:text-2xl leading-relaxed"
+>
+  Helping brands improve ROAS, reduce CPA, and automate growth
+  using Google Ads, Amazon PPC, analytics, and AI-driven systems.
+           </motion.p>
 
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-4 text-sm text-slate-500 sm:text-base tracking-wide"
-          >
-            {personalInfo.subheadline}
-          </motion.p>
+     
+          
+            
+            
+            
+            
+
+            
+
 
           {/* ROAS highlight */}
           <motion.div
@@ -156,19 +157,36 @@ export function Hero() {
 
           {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-10 flex flex-col sm:flex-row items-center gap-4"
-          >
-            <Button href="#case-studies" size="lg">
-              View Case Studies
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button href="#contact" variant="secondary" size="lg">
-              Let&apos;s Work Together
-            </Button>
-          </motion.div>
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.7 }}
+  className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500 sm:text-sm"
+>
+  <span>Google Ads</span>
+  <span>•</span>
+  <span>Amazon PPC</span>
+  <span>•</span>
+  <span>GA4 Analytics</span>
+  <span>•</span>
+  <span>AI Automation</span>
+  <span>•</span>
+  <span>Performance Marketing</span>
+</motion.div>
+          <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.5 }}
+  className="mt-10 flex flex-col sm:flex-row items-center gap-4"
+>
+  <Button href="#ai-audit" size="lg">
+    Get Free AI Growth Audit
+    <ArrowRight className="h-4 w-4" />
+  </Button>
+
+  <Button href="#case-studies" variant="secondary" size="lg">
+    View Case Studies
+  </Button>
+</motion.div>
 
           {/* Mobile floating cards grid */}
           <motion.div

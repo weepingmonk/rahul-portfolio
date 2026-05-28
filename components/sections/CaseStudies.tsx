@@ -12,8 +12,8 @@ export function CaseStudies() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Case Studies"
-          title="Proven Results Across Platforms"
-          description="Real campaigns, real metrics — see how data-driven strategies delivered measurable growth."
+          title="Growth Stories Backed by Data"
+          description="From ROAS improvements to CPA reductions, these campaigns demonstrate how strategic optimization translated into measurable business outcomes."
         />
 
         <div className="grid gap-8 lg:grid-cols-3">
