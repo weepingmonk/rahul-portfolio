@@ -186,6 +186,4 @@ export const navLinks = [
 export const heroFloatingCards = [
   { label: "ROAS", value: "4.2x", change: "+28%", position: "top-left" },
   { label: "CPA", value: "₹700", change: "-30%", position: "top-right" },
-  { label: "ACOS", value: "18%", change: "On target", position: "bottom-left" },
-  { label: "Spend", value: "₹4.2L", change: "Optimized", position: "bottom-right" },
 ];
