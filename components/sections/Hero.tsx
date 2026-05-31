@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp, Sparkles } from "lucide-react";
-import { personalInfo, metrics, heroFloatingCards } from "@/lib/data";
+import { personalInfo, heroFloatingCards } from "@/lib/data";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
@@ -206,37 +206,6 @@ export function Hero() {
             ))}
           </motion.div>
 
-          {/* Metrics strip */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
-            className="mt-16 w-full"
-          >
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {metrics.map((metric, i) => (
-                <motion.div
-                  key={metric.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + i * 0.08 }}
-                >
-                  <GlassCard className="p-4 text-center" hover glow>
-                    <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-400 to-orange-200 bg-clip-text text-transparent">
-                      {metric.value}
-                    </p>
-                    <p className="mt-1 text-xs font-medium text-white">{metric.label}</p>
-                    <p className="mt-0.5 text-[10px] text-slate-500 hidden sm:block">
-                      {metric.description}
-                    </p>
-                    <span className="mt-2 inline-block rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-                      {metric.trend}
-                    </span>
-                  </GlassCard>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

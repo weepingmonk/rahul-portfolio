@@ -103,38 +103,103 @@ export const services = [
 export const caseStudies = [
   {
     id: "ecommerce-roas",
+
     title: "E-Commerce ROAS Scale-Up",
+
     client: "D2C Fashion Brand",
+
     platform: "Google Ads + GA4",
+
+    before: {
+      roas: "2.4x",
+      cpa: "₹1,000",
+    },
+
+    after: {
+      roas: "3.2x",
+      cpa: "₹720",
+    },
+
+    strategy: [
+      "Performance Max",
+      "Audience Segmentation",
+      "GA4 Attribution",
+    ],
+
     results: [
       "32% ROAS improvement in 90 days",
       "CPA reduced from ₹1,000 to ₹720",
       "₹3.2L monthly ad spend optimized",
     ],
+
     tags: ["Google Ads", "GA4", "ROAS"],
   },
+
   {
     id: "amazon-acos",
+
     title: "Amazon ACOS Optimization",
+
     client: "Home & Kitchen Seller",
+
     platform: "Amazon Ads",
+
+    before: {
+      acos: "24%",
+      rank: "#18",
+    },
+
+    after: {
+      acos: "18%",
+      rank: "#7",
+    },
+
+    strategy: [
+      "Keyword Harvesting",
+      "Bid Optimization",
+      "Search Term Mining",
+    ],
+
     results: [
       "ACOS maintained under 18%",
       "25% increase in organic rank",
       "₹2L monthly PPC budget managed",
     ],
+
     tags: ["Amazon PPC", "ACOS", "Keywords"],
   },
+
   {
     id: "reporting-automation",
+
     title: "Analytics Automation Pipeline",
+
     client: "Multi-Brand Agency",
+
     platform: "Python + GA4 + Tableau",
+
+    before: {
+      reporting: "10 hrs/week",
+      dashboards: "Manual",
+    },
+
+    after: {
+      reporting: "6 hrs/week",
+      dashboards: "Automated",
+    },
+
+    strategy: [
+      "Python Automation",
+      "GA4 Integration",
+      "AI Insights Engine",
+    ],
+
     results: [
       "40% reduction in manual reporting",
       "Real-time dashboard deployment",
       "AI-generated weekly insights",
     ],
+
     tags: ["Automation", "Python", "Tableau"],
   },
 ];
