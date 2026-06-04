@@ -11,6 +11,7 @@ const tools = [
   "Looker Studio",
   "Google Tag Manager",
   "OpenAI",
+  "Claude",
   "Groq",
   "Notion",
   "AI Automation",

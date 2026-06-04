@@ -206,23 +206,60 @@ export const caseStudies = [
 
 export const certifications = [
   {
+    id: "hubspot-digital-marketing",
+
+    title: "Digital Marketing Certification",
+
+    issuer: "HubSpot Academy",
+
+    year: "2026",
+
+    description:
+      "Comprehensive certification covering content marketing, SEO, social media, email marketing, lead generation, and digital growth strategies.",
+
+    badge: "HubSpot",
+
+    credentialUrl:
+      "https://app-na2.hubspot.com/academy/achievements/w8rq7jv7/en/1/rahul-kumar/digital-marketing-certified",
+  },
+
+  {
     id: "ga-cert",
+
     title: "Google Analytics Certification",
+
     issuer: "Google",
+
     year: "2024",
+
     description:
       "Advanced proficiency in GA4 property setup, reporting, and data analysis.",
+
+      credentialUrl: "https://skillshop.credential.net/a0e0f010-950e-48b0-92b3-8e6150df2db0",
+
     badge: "GA4",
   },
+
   {
     id: "amazon-cert",
+  
     title: "Amazon Ads Foundations Certification",
-    issuer: "Amazon",
-    year: "2024",
+  
+    issuer: "Amazon Ads Academy",
+  
+    year: "2026",
+  
     description:
-      "Foundational expertise in Sponsored Products, Brands, and campaign management.",
+      "Certified in Amazon Ads fundamentals, Sponsored Products, campaign optimization, keyword targeting, and advertising best practices.",
+  
     badge: "Amazon",
-  },
+  
+    credentialId:
+      "c564d7c5-1885-4243-8cd1-539ca85d3551",
+  
+    expires:
+      "May 21, 2028",
+  }
 ];
 
 export const skills = [
