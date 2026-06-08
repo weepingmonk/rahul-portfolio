@@ -148,11 +148,12 @@ export async function POST(req: Request) {
         "No analysis available.",
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-
+  
     return Response.json({
-      result: "Something went wrong.",
+      result: error.message,
     });
+
   }
 }
